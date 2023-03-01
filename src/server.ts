@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { z } from "zod";
-import ShortUniqueId from "short-unique-id";
+import jwt from '@fastify/jwt'
 import { pollRoutes } from "./routes/polls";
 import { userRoutes } from "./routes/user";
 import { guessRoutes } from "./routes/guess";
@@ -16,6 +16,10 @@ async function bootstrap() {
   await fastify.register(cors, {
     origin: true,
   });
+
+await fastify.register(jwt, {
+    secret: process.env.JWT_SECRET
+})
 
   await fastify.register(pollRoutes);
   await fastify.register(userRoutes);
