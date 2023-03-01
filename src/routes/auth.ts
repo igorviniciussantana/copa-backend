@@ -16,24 +16,36 @@ export async function authRoutes(fastify: FastifyInstance) {
         method: "GET",
         headers: {
           Authorization: `Bearer ${acess_token}`,
-        }
+        },
       }
     );
 
-
     const userData = await userResponse.json();
 
-
     const userInfoSchema = z.object({
-        id: z.string(),
-        email: z.string().email(),
-        name: z.string(),
-        picture: z.string().url()
-    })
+      id: z.string(),
+      email: z.string().email(),
+      name: z.string(),
+      picture: z.string().url(),
+    });
 
-    const userInfo = userInfoSchema.parse(userData)
+    const userInfo = userInfoSchema.parse(userData);
 
+    let user = await prisma.user.findUnique({
+      where: { googleId: userInfo.id },
+    });
 
-    return { userInfo }
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          googleId: userInfo.id,
+          name: userInfo.name,
+          email: userInfo.email,
+          avatarUrl: userInfo.picture,
+        },
+      });
+    }
+    
+    return { userInfo };
   });
 }
