@@ -4,9 +4,6 @@ import { z } from "zod";
 import ShortUniqueId from "short-unique-id";
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient({
-  log: ["query"],
-});
 
 async function bootstrap() {
   const fastify = Fastify({
