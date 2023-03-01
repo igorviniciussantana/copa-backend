@@ -22,7 +22,6 @@ export async function pollRoutes(fastify : FastifyInstance){
         const code = String(generate()).toUpperCase();
     
 
-let ownerId = null;
 
 try {
   await request.jwtVerify()
@@ -32,6 +31,12 @@ try {
       title,
       code,
       ownerId: request.user.sub,
+
+      participants: {
+        create: {
+          userId: request.user.sub
+        }
+      }
     },
   });
 
